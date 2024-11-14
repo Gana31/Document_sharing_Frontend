@@ -51,7 +51,7 @@ export function login(email, password, navigate) {
           });
           if (response.data.success) {
             toast.success('User registered successfully');
-            setCurrentState('Login')
+            
           } else {
             console.log("reseger reposnse",response)
             toast.error(response.data.message);

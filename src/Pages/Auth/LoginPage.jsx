@@ -20,6 +20,7 @@ function LoginPage() {
     event.preventDefault();
       if (currentState === 'Sign Up') {
         dispatch(Register(name,email, password, navigate))
+        setCurrentState('Login')
       } else {
         dispatch(login(email, password, navigate))
       }
