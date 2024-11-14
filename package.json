@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "proxy": "http://localhost:8080",
+  "proxy": "https://document-sharing-4sai.vercel.app/?vercelToolbarCode=JwjjPKUcuYsdmw4",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

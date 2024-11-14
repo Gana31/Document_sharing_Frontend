@@ -1,4 +1,6 @@
-export const BASE_URL = "http://localhost:8080/api/v1"
+// export const BASE_URL = "http://localhost:8080/api/v1"
+export const BASE_URL = "https://document-sharing-4sai.vercel.app/?vercelToolbarCode=JwjjPKUcuYsdmw4/api/v1"
+
 
 export const SIGNUP_API = BASE_URL + "/userregister"
 
