@@ -5,7 +5,7 @@ import profileIcon from './profile_icon.png';
 import cartIcon from './cart_icon.png';
 import menuIcon from './menu_icon.png';
 import dropdownIcon from './dropdown_icon.png';
-import bookHero from "./bookHero.jpg";
+import bookHero from "./bookhero.jpg";
 import book from "./book.png"
 import Bin from "./bin_icon.png"
 import exchange from './exchange_icon.png'
