@@ -22,17 +22,13 @@ export function login(email, password, navigate) {
             toast.success('Logged in successfully');
             dispatch(setLoginData({user: user1,accessToken}))
             
-          } else {
+          } 
             navigate("/")
-            console.log("lognn reposnse",response)
+            console.log("lognn reposnse",response.response)
             toast.error(response.data.message);
-          }
-        
-  
-      
       } catch (error) {
-        console.log("LOGIN API ERROR............", error)
-        toast.error("Login Failed")
+        // console.log("LOGIN API ERROR............", error)
+        toast.error(error.response.data.message || "Login Failed")
         navigate("/")
       }
       dispatch(setLoading(false))
@@ -57,8 +53,8 @@ export function login(email, password, navigate) {
             toast.error(response.data.message);
           }
       } catch (error) {
-        console.log("LOGIN API ERROR............", error)
-        toast.error("Login Failed")
+        // console.log("LOGIN API ERROR............", error)
+        toast.error(error.response.data.message ||"Login Failed")
         navigate("/")
       }
       dispatch(setLoading(false))

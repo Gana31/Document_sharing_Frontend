@@ -2,31 +2,35 @@ import React, { useContext, useEffect, useState } from 'react';
 import assets from '../../assets';
 import Title from '../../Component/Title';
 import CartTotal from './CartTotal';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeProduct } from '../../slices/cartslice';
 
 const Cart = () => {
-    const [products,setproducts] = useState([]);
-
+  const dispatch = useDispatch();
+  const { products } = useSelector((state) => state.cart);  
   const [cartData, setCartData] = useState([]);
-    const [cartItem,setcartItem] = useState([])
-
+  const [cartItem,setcartItem] = useState([])
+  const currency  = '₹'
   useEffect(() => {
+    console.log(products)
     if (products.length > 0) {
-      const tempData = [];
-
-      for (const items in cartItem) {
-        for (const item in cartItem[items]) {
-          if (cartItem[items][item] > 0) {
-            tempData.push({
-              _id: items,
-              size: item,
-              quantity: cartItem[items][item],
-            });
-          }
-        }
-      }
+      const tempData = products.map((product) => ({
+        _id: product.id, 
+        name: product.title,
+        size: 'default', 
+        quantity: product.quantity,
+        images:product.images,
+        price:product.price
+      }));
       setCartData(tempData);
     }
-  }, [cartItem, products]);
+  }, [products]);
+
+  const subtotal = cartData.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+ const handleDelete = (productId) => {
+    // dispatch(removeProduct(productId)); 
+  };
 
   return (
     <div className=" border-t pt-14 mx-16">
@@ -37,7 +41,7 @@ const Cart = () => {
       <div>
         {cartData.map((item, index) => {
           const proudctData = products.find(
-            (product) => product._id === item._id
+            (product) => product.id === item._id
           );
 
           return (
@@ -48,21 +52,19 @@ const Cart = () => {
               <div className=" flex items-start gap-6">
                 <img
                   className=" w-16 sm:w-20 "
-                  src={proudctData.image[0]}
+                  src={proudctData.images[0].url}
                   alt=""
                 />
                 <div>
                   <p className=" text-xs s.:text-lg font-medium">
-                    {proudctData.name}
+                    {proudctData.title}
                   </p>
                   <div className=" flex items-center gap-5 mt-2">
                     <p>
                       {currency}
                       {proudctData.price}
                     </p>
-                    <p className=" px-2 sm:px-3 sm:py-1 border bg-slate-50 ">
-                      {item.size}
-                    </p>
+                
                   </div>
                 </div>
               </div>
@@ -82,7 +84,7 @@ const Cart = () => {
                 defaultValue={item.quantity}
               />
               <img
-                onClick={() => updateQuantity(item._id, item.size, 0)}
+                onClick={() => handleDelete(item._id)}
                 className="w-4 mr-4 sm:w-5 cursor-pointer"
                 src={assets.Bin}
                 alt=""
@@ -94,7 +96,7 @@ const Cart = () => {
 
       <div className=" flex justify-end my-20">
         <div className=" w-full sm:w-[450px]">
-          <CartTotal/>
+          <CartTotal subtotal={subtotal}/>
           <div className=" w-full text-end">
             <button
               onClick={() => navigate('/place-order')}

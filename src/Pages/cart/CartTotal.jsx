@@ -1,35 +1,33 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Title from '../../Component/Title';
 
+const CartTotal = ({ subtotal }) => {
+  const currency = '₹';
 
-const CartTotal = () => {
 
-const currency  = '₹'
-  const subtotal = 100 || 0;
-  const shippingFee = 400 || 0; 
+  const shippingFee = Math.max(subtotal * 0.1, 200); 
   const total = subtotal + shippingFee; 
 
-
   return (
-    <div className='w-full'>
-      <div className='text-2xl'>
+    <div className="w-full">
+      <div className="text-2xl">
         <Title text1={"CART"} text2={"TOTALS"} />
       </div>
 
-      <div className='flex flex-col gap-2 mt-2 text-sm'>
-        <div className='flex justify-between'>
+      <div className="flex flex-col gap-2 mt-2 text-sm">
+        <div className="flex justify-between">
           <p>Subtotal</p>
-          <p>{currency} {subtotal}.00</p>
+          <p>{currency} {subtotal.toFixed(2)}</p>
         </div>
         <hr />
-        <div className='flex justify-between'>
+        <div className="flex justify-between">
           <p>Shipping Fee</p>
-          <p>{currency} {subtotal === 0 ? 0 : shippingFee}.00</p>
+          <p>{currency} {shippingFee.toFixed(2)}</p>
         </div>
         <hr />
-        <div className='flex justify-between'>
+        <div className="flex justify-between">
           <b>Total</b>
-          <b>{currency} {subtotal === 0 ? 0 : total }.00</b>
+          <b>{currency} {total.toFixed(2)}</b>
         </div>
       </div>
     </div>

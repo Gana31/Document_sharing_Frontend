@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { GetProductId } from '../../Services/operations/productoperiton';
 import { useParams } from 'react-router-dom';
+import { addToCart } from '../../Services/operations/cartopertion';
 
 function ProductDetailPage() {
   const id  = useParams(); 
