@@ -11,3 +11,5 @@ export const PRODUCTBYID= BASE_URL + "/getproductbyid"
 export const ADDPRODUCT= BASE_URL + "/createproduct"
 
 export const GET_CATEGORIES= BASE_URL + "/getAllCategories"
+
+export const GET_USER_PRODUCT=""
