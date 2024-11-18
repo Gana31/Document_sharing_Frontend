@@ -10,6 +10,9 @@ import book from "./book.png"
 import Bin from "./bin_icon.png"
 import exchange from './exchange_icon.png'
 import quality from './quality_icon.png'
+import uploadArea from './upload_area.png'
+import addicon from './add_icon.png'
+import ordericon from './order_icon.png'
 export default {
   logo,
   searchIcon,
@@ -21,5 +24,8 @@ export default {
   book,
   Bin,
   exchange,
-  quality
+  quality,
+  uploadArea,
+  addicon,
+  ordericon,
 };

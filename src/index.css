@@ -10,3 +10,15 @@
   .form-style {
      rounded-lg bg-gray-300 p-3 text-[16px] leading-[24px] text-black shadow-[0_1px_0_0] shadow-white/50 placeholder:text-white focus:outline-none;
   } */
+
+  select,input,textarea{
+   border: 1px solid #c2c2c2;
+   outline-color: #C586A5;
+   border-radius: 4px;
+ }
+ 
+ 
+ .active{
+   background-color: #ffebf5;
+   border-color: #C586A5;
+ }

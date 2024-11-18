@@ -1,70 +1,98 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import assets from '../../assets';
 import { logout } from '../../Services/operations/authoperations';
 
 const Header = () => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false); // Mobile sidebar visibility
+  const [dropdownVisible, setDropdownVisible] = useState(false); // Profile dropdown visibility
   const { accessToken } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const toggleDropdown = () => {
+    setDropdownVisible((prev) => !prev);
+  };
+
   return (
     <div className="flex items-center px-5 justify-between py-5 font-medium h-16">
-      <p><Link to="/">
-          BOOk
-        </Link></p>
+      {/* Logo */}
+      <p>
+        <Link to="/">BOOk</Link>
+      </p>
+
+      {/* Navigation Links */}
       <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
         <NavLink to="/" className="flex flex-col items-center gap-1">
           <p>HOME</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
         </NavLink>
         <NavLink to="/productlist" className="flex flex-col items-center gap-1">
           <p>COLLECTION</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
         </NavLink>
         <NavLink to="/about" className="flex flex-col items-center gap-1">
           <p>ABOUT</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
         </NavLink>
         <NavLink to="/contact" className="flex flex-col items-center gap-1">
           <p>CONTACT</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
         </NavLink>
       </ul>
 
+      {/* Right-Side Icons */}
       <div className="flex items-center gap-6">
         <img
-          onClick={() => ""}
           src={assets.searchIcon}
           alt="search"
           className="w-5 cursor-pointer"
         />
 
-        <div className="group relative">
+        {/* Profile Icon and Dropdown */}
+        <div className="relative">
           <img
-            onClick={() => (!accessToken ? navigate('/login') : null )}
+            onClick={() => {
+              if (!accessToken) navigate('/login');
+              else toggleDropdown();
+            }}
             src={assets.profileIcon}
             alt="Profile"
             className="w-5 cursor-pointer"
           />
-          {/* drop down menu */}
-          {accessToken && (
-            <div className="group-hover:block hidden absolute right-0 pt-4">
-              <div className="flex flex-col gap-2 w-36 py-5 bg-slate-100 text-gray-500 rounded p-4">
-                <p className="cursor-pointer hover:text-black">My Profile</p>
-                <p onClick={()=>navigate('/')} className="cursor-pointer hover:text-black">Orders</p>
-                <p
-                  onClick={() => dispatch(logout(navigate))}
-                  className="cursor-pointer hover:text-black"
-                >
-                  Logout
-                </p>
-              </div>
+
+          {/* Dropdown Menu */}
+          {dropdownVisible && accessToken && (
+            <div
+              className="absolute right-0 mt-2 py-2 w-36 bg-slate-100 text-gray-500 rounded shadow-lg z-10"
+              onMouseLeave={() => setDropdownVisible(false)}
+            >
+              <p
+                className="px-4 py-2 cursor-pointer hover:text-black"
+                onClick={() => navigate('/profile')}
+              >
+                My Profile
+              </p>
+              <p
+                className="px-4 py-2 cursor-pointer hover:text-black"
+                onClick={() => navigate('/orders')}
+              >
+                Orders
+              </p>
+              <p
+                className="px-4 py-2 cursor-pointer hover:text-black"
+                onClick={() => navigate('/add-product')}
+              >
+                Add Products
+              </p>
+              <p
+                className="px-4 py-2 cursor-pointer hover:text-black"
+                onClick={() => dispatch(logout(navigate))}
+              >
+                Logout
+              </p>
             </div>
           )}
         </div>
 
+        {/* Cart Icon */}
         <Link to="/cart" className="relative">
           <img src={assets.cartIcon} className="w-5 min-w-5" alt="Cart" />
           <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
@@ -72,6 +100,7 @@ const Header = () => {
           </p>
         </Link>
 
+        {/* Mobile Menu Icon */}
         <img
           onClick={() => setVisible(true)}
           src={assets.menuIcon}
@@ -82,7 +111,7 @@ const Header = () => {
 
       {/* Sidebar menu for small screens */}
       <div
-        className={`absolute top-0 right-0 bottom-0 bg-white overflow-hidden transition-width duration-300 ${
+        className={`absolute top-0 right-0 bottom-0 bg-white overflow-hidden transition-all duration-300 ${
           visible ? 'w-full' : 'w-0'
         }`}
       >
@@ -109,7 +138,7 @@ const Header = () => {
           <NavLink
             onClick={() => setVisible(false)}
             className="py-2 pl-6 border"
-            to="/collection"
+            to="/productlist"
           >
             COLLECTION
           </NavLink>
