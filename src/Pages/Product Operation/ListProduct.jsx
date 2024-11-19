@@ -2,57 +2,36 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import apiClient from '../../Services/ApiConnect';
-import { GET_USER_PRODUCT } from '../../data/constant';
-import { useSelector } from 'react-redux';
+import { DELETE_PRODUCT, GET_USER_PRODUCT } from '../../data/constant';
+import { useDispatch, useSelector } from 'react-redux';
+import { SetUserProudct } from '../../Services/operations/productoperiton';
 
 const ListProduct = ({ token }) => {
   const [list, setList] = useState([]);
   const { user } = useSelector((state) => state.auth);
+  const { userProducts } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
   const currency = '₹';
-  const fetchList = async () => {
-    try {
-        if (user) {
-            const response = await apiClient.get(`${GET_USER_PRODUCT}/${user.id}`);
-            if (response.data.success) {
-                setList(response.data.data);
-            } else {
-                toast.error(response.data.message);
-            }
-        }
-      
-    } catch (error) {
-      console.error(error);
-      toast.error(error.message);
-    }
-  };
+  
 
   useEffect(() => {
-    fetchList();
-  }, []);
+    dispatch(SetUserProudct(user.id));
+  }, [dispatch, user]);
 
-  const removeProduct = async (id) => {
+  const removeProduct = async (_id) => {
     try {
-      const response = await axios.post(
-        `${backendUrl}/api/product/remove`,
-        { id },
-        {
-          headers: {
-            token: token,
-          },
-        }
-      );
-
-      if (response.data.success) {
-        toast.success(response.data.message);
-        await fetchList();
-      } else {
-        toast.error(response.data.message);
+      const response = await apiClient.delete(`${DELETE_PRODUCT}/${_id}`);
+      if(response.data.success){
+        dispatch(SetUserProudct(user.id));
+        toast.success(response.data.message)
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.message);
+      toast.error(error?.response?.data?.message||"error while deleting the proudct");
     }
   };
+
+  const editProduct = async (_id) => {}
+
 
   return (
     <>
@@ -68,21 +47,21 @@ const ListProduct = ({ token }) => {
         </div>
 
         {/* Product list */}
-        {list.map((item, index) => (
+        {userProducts.map((item, index) => (
           <div
             className="flex flex-col md:grid md:grid-cols-5 items-center gap-2 p-4 border text-sm text-gray-700"
             key={index}
           >
             {/* Image */}
             <div className="flex justify-center">
-              <img className="w-16 h-16 object-cover rounded-md" src={item.images[0].url} alt={item.title} />
+              <img className="w-16 h-16 object-cover rounded-md" src={item?.images[0]?.url} alt={item.title} />
             </div>
 
             {/* Name */}
             <p className="text-center font-medium truncate">{item.title}</p>
 
             {/* Category */}
-            <p className="text-center">{item.categories[0].name}</p>
+            <p className="text-center">{item?.categories[0]?.name}</p>
 
             {/* Price */}
             <p className="text-center">
@@ -93,14 +72,14 @@ const ListProduct = ({ token }) => {
             {/* Action */}
             <div className='flex gap-x-3'>
             <button
-              onClick={() => removeProduct(item._id)}
+              onClick={() => editProduct(item._id)}
               className="text-center text-red-600 hover:text-red-800 cursor-pointer"
             >
-              edit 
+              Edit 
             </button>
             <span>|</span>
             <button
-              onClick={() => removeProduct(item._id)}
+              onClick={() => removeProduct(item.id)}
               className="text-center text-red-600 hover:text-red-800 cursor-pointer"
             >
               Remove

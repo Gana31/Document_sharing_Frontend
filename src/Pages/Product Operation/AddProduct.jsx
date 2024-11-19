@@ -81,7 +81,7 @@ const AddProduct = () => {
         toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error('Failed to add product');
+      toast.error(error?.response?.data?.message || 'Failed to add product');
       console.error(error);
     }
   };
