@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import assets from '../../assets';
 import { logout } from '../../Services/operations/authoperations';
+import { selectCartTotalCount } from '../../slices/cartslice';
 
 const Header = () => {
   const [visible, setVisible] = useState(false); // Mobile sidebar visibility
   const [dropdownVisible, setDropdownVisible] = useState(false); // Profile dropdown visibility
   const { accessToken } = useSelector((state) => state.auth);
+  const totalCartCount = useSelector(selectCartTotalCount);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -72,7 +74,7 @@ const Header = () => {
               </p>
               <p
                 className="px-4 py-2 cursor-pointer hover:text-black"
-                onClick={() => navigate('/orders')}
+                onClick={() => navigate('/userorders')}
               >
                 Orders
               </p>
@@ -96,7 +98,7 @@ const Header = () => {
         <Link to="/cart" className="relative">
           <img src={assets.cartIcon} className="w-5 min-w-5" alt="Cart" />
           <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
-            {/* {getCartCount()} */}
+            {totalCartCount}
           </p>
         </Link>
 

@@ -18,7 +18,7 @@ const NewsLetterBox = () => {
         onSubmit={onSumbitHandler}
       >
         <input
-          className=" w-full sm:flex-1 outline-none "
+          className=" w-full sm:flex-1 outline-none border-none"
           type="email"
           name=""
           id=""

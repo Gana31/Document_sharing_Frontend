@@ -12,6 +12,7 @@ import About from './Pages/About/About'
 import AddProduct from './Pages/Product Operation/AddProduct'
 import Layout from './Pages/Product Operation/Layout'
 import ListProduct from './Pages/Product Operation/ListProduct'
+import UserOrders from './Pages/Orders/UserOrders'
 
 function App() {
   const { accessToken } = useSelector((state) => state.auth);
@@ -33,6 +34,7 @@ function App() {
         <Route path="/contact" element={<Contact/>} />
         <Route path="/cart" element={<Cart/>} />
         <Route path="/about" element={<About/>} />
+        <Route path="/userorders" element={<UserOrders/>} />
         <Route path="/add-product"  element={ <Layout> <AddProduct /></Layout> } /> 
         <Route path="/list-product"  element={ <Layout> <ListProduct /></Layout> } />
        </Routes>

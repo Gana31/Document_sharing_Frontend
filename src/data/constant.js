@@ -1,5 +1,5 @@
-// export const BASE_URL = "http://localhost:8080/api/v1"
-export const BASE_URL = "https://document-sharing.vercel.app/api/v1"
+export const BASE_URL = "http://localhost:8080/api/v1"
+// export const BASE_URL = "https://document-sharing.vercel.app/api/v1"
 
 
 export const SIGNUP_API = BASE_URL + "/userregister"
@@ -15,3 +15,9 @@ export const GET_CATEGORIES= BASE_URL + "/getAllCategories"
 export const GET_USER_PRODUCT="/getallproductByUserId"
 
 export const DELETE_PRODUCT="/deleteproduct"
+
+export const UPDATE_PRODUCT="/updateproduct"
+
+export const CREATE_ORDER="/createOrder"
+
+export const USER_PREVIOUS_ORDERS="/getAllPreviousOrders"

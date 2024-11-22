@@ -1,12 +1,8 @@
 import React from 'react';
 import Title from '../../Component/Title';
 
-const CartTotal = ({ subtotal }) => {
+const CartTotal = ({ subtotal, shippingFee, total }) => {
   const currency = '₹';
-
-
-  const shippingFee = Math.max(subtotal * 0.1, 200); 
-  const total = subtotal + shippingFee; 
 
   return (
     <div className="w-full">

@@ -1,109 +1,126 @@
-import React, { useContext, useEffect, useState } from 'react';
-import assets from '../../assets';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Title from '../../Component/Title';
 import CartTotal from './CartTotal';
-import { useDispatch, useSelector } from 'react-redux';
-import { removeProduct } from '../../slices/cartslice';
+import { removeProduct, increaseQuantity, decreaseQuantity } from '../../slices/cartslice';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // or use your preferred method for API calls
+import assets from '../../assets';
+import { ProccedToBuy } from '../../Services/operations/cartopertion';
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.cart);  
-  const [cartData, setCartData] = useState([]);
-  const [cartItem,setcartItem] = useState([])
-  const currency  = '₹'
-  useEffect(() => {
-    console.log(products)
-    if (products.length > 0) {
-      const tempData = products.map((product) => ({
-        _id: product.id, 
-        name: product.title,
-        size: 'default', 
-        quantity: product.quantity,
-        images:product.images,
-        price:product.price
-      }));
-      setCartData(tempData);
-    }
-  }, [products]);
+  const navigate = useNavigate();
+  const { products } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.auth);
+  const currency = '₹';
 
-  const subtotal = cartData.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  // Calculate subtotal
+  const subtotal = products.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
- const handleDelete = (productId) => {
-    // dispatch(removeProduct(productId)); 
+  // Calculate shipping fee based on your logic
+  const shippingFee = subtotal > 1 ? Math.max(subtotal * 0.1, 200) : 0;
+  const total = subtotal + shippingFee;
+
+  const handleDelete = (productId) => {
+    dispatch(removeProduct(productId));
+  };
+
+  const handleIncrease = (productId) => {
+    dispatch(increaseQuantity(productId));
+  };
+
+  const handleDecrease = (productId) => {
+    dispatch(decreaseQuantity(productId));
+  };
+
+  // Handle Proceed to Checkout and make API call
+  const handleCheckout = async () => {
+    dispatch(ProccedToBuy(user.id,products,total))
   };
 
   return (
-    <div className=" border-t pt-14 mx-16">
-      <div className=" text-3xl mb-3">
+    <div className="lg:w-full border-t pt-14 mx-4 sm:mx-16">
+      <div className="text-2xl sm:text-3xl mb-3 text-center sm:text-left">
         <Title text1={'YOUR'} text2={'CART'} />
       </div>
 
-      <div>
-        {cartData.map((item, index) => {
-          const proudctData = products.find(
-            (product) => product.id === item._id
-          );
-
-          return (
+      <div className="w-full flex flex-col lg:flex-row">
+        <div className="w-full lg:w-[60%]">
+          {products.map((product, index) => (
             <div
               key={index}
-              className=" py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4 "
+              className="py-4 border-t border-b text-gray-700 flex gap-4"
             >
-              <div className=" flex items-start gap-6">
+              {/* Left Section: Image */}
+              <div className="w-1/3 sm:w-1/6 h-auto flex-shrink-0 min-h-25 max-h-72 max-w-36">
                 <img
-                  className=" w-16 sm:w-20 "
-                  src={proudctData.images[0].url}
-                  alt=""
+                  className="w-full h-full object-cover rounded"
+                  src={product.images[0]?.url || 'default-image-url'}
+                  alt="Product"
+                  style={{ objectFit: 'cover' }}
                 />
+              </div>
+
+              {/* Right Section: Details */}
+              <div className="w-4/5 flex flex-col lg:flex-row justify-between lg:justify-evenly lg:items-center">
+                <div className="lg:w-[40%]">
+                  <p className="text-sm sm:text-lg font-medium">{product.title}</p>
+                </div>
                 <div>
-                  <p className=" text-xs s.:text-lg font-medium">
-                    {proudctData.title}
+                  <p className="text-black font-bold lg:text-3xl sm:text-sm mt-1">
+                    {currency}
+                    {product.price}
                   </p>
-                  <div className=" flex items-center gap-5 mt-2">
-                    <p>
-                      {currency}
-                      {proudctData.price}
-                    </p>
-                
-                  </div>
+                </div>
+
+                {/* Quantity Controls */}
+                <div className="flex items-center gap-4 mt-2">
+                  <button
+                    onClick={() => handleDecrease(product.id)}
+                    className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                  >
+                    -
+                  </button>
+                  <span className="text-sm sm:text-lg">{product.quantity}</span>
+                  <button
+                    onClick={() => handleIncrease(product.id)}
+                    className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                  >
+                    +
+                  </button>
+                </div>
+
+                {/* Delete Button */}
+                <div>
+                  <button
+                    onClick={() => handleDelete(product.id)}
+                    className="mt-4 text-red-500 flex items-center gap-1"
+                  >
+                    <img
+                      className="w-4 sm:w-5"
+                      src={assets.Bin} // Change this to your actual icon
+                      alt="Delete"
+                    />
+                    Remove
+                  </button>
                 </div>
               </div>
-              <input
-                onChange={(e) =>
-                  e.target.value === '' || e.target.value === '0'
-                    ? null
-                    : updateQuantity(
-                        item._id,
-                        item.size,
-                        Number(e.target.value)
-                      )
-                }
-                className="border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
-                type="number"
-                min={1}
-                defaultValue={item.quantity}
-              />
-              <img
-                onClick={() => handleDelete(item._id)}
-                className="w-4 mr-4 sm:w-5 cursor-pointer"
-                src={assets.Bin}
-                alt=""
-              />
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
 
-      <div className=" flex justify-end my-20">
-        <div className=" w-full sm:w-[450px]">
-          <CartTotal subtotal={subtotal}/>
-          <div className=" w-full text-end">
-            <button
-              onClick={() => navigate('/place-order')}
-              className=" bg-black text-white text-sm my-8 px-3 py-3"
-            >
-              PROCEED TO CHECKOUT
-            </button>
+        <div className="flex justify-end mt-10">
+          <div className="w-full sm:w-[450px]">
+            <CartTotal subtotal={subtotal} shippingFee={shippingFee} total={total} />
+            <div className="w-full text-end">
+              <button
+                onClick={handleCheckout}
+                className="bg-black text-white text-sm my-8 px-3 py-3 rounded hover:bg-gray-800 transition"
+              >
+                PROCEED TO CHECKOUT
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -5,43 +5,43 @@ import { useParams } from 'react-router-dom';
 import { addToCart } from '../../Services/operations/cartopertion';
 
 function ProductDetailPage() {
-  const id  = useParams(); 
+  const id = useParams();
   const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState("");
-  const [imageKey, setImageKey] = useState(0); 
+  const [imageKey, setImageKey] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const data = await dispatch(GetProductId(id)); 
+      const data = await dispatch(GetProductId(id));
       if (data) {
         console.log(data)
-        setProduct(data.data); 
-        setSelectedImage(data.data?.images[0]?.url); 
+        setProduct(data.data);
+        setSelectedImage(data.data?.images[0]?.url);
       }
     };
 
     fetchProduct();
-  }, [ dispatch]); 
+  }, [dispatch]);
 
   if (!product) {
-    return <div className="p-8 text-center">Loading...</div>; 
+    return <div className="p-8 text-center">Loading...</div>;
   }
 
   const handleImageChange = (image) => {
     // console.log(image)
-    setImageKey(image.id); 
-    setSelectedImage(image.url); 
+    setImageKey(image.id);
+    setSelectedImage(image.url);
   };
-  const handleOrderNow  = () => {
+  const handleOrderNow = () => {
     if (product) {
       dispatch(addToCart(product, quantity)); // Dispatch action to add product to cart
     }
   };
   return (
-    <div className="font-sans p-8 mt-10 lg:max-w-6xl max-w-2xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="font-sans lg:p-8 p-3 mt-10 lg:max-w-6xl max-w-2xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
         {/* Product images */}
         <div className="text-center">
           <div className="lg:h-[560px] overflow-hidden">
@@ -68,11 +68,10 @@ function ProductDetailPage() {
         {/* Product details */}
         <div>
           <h2 className="text-2xl font-bold text-gray-800">{product.title}</h2>
-          <p className="text-sm text-gray-500 mt-2">by {product.author}</p>
 
           <div className="flex items-center gap-4 mt-4">
             <span className="text-3xl font-bold text-gray-800">₹{product.price}</span>
-            <span className="text-lg text-gray-500 line-through">₹{product.originalPrice}</span>
+            {product.origialprice && <span className="text-lg text-gray-500 line-through">₹{product.originalPrice}</span>}
           </div>
 
           <div className="mt-4">
@@ -83,8 +82,8 @@ function ProductDetailPage() {
           </div>
 
           {/* Quantity Selector */}
-          <div className="mt-4">
-            <label htmlFor="quantity" className="text-xl font-semibold text-gray-800">
+          <div className="sm:w-full mt-4 sm:items-center sm:text-center lg:text-start">
+            <label htmlFor="quantity" className="text-xl font-semibold text-gray-800 mr-2">
               Quantity
             </label>
             <input
@@ -99,17 +98,17 @@ function ProductDetailPage() {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-wrap gap-4 mt-8">
+          <div className="sm:w-full flex flex-col lg:flex-row gap-4 lg:mt-8 mt-4 text-center items-center justify-center lg:justify-normal">
             <button
               type="button"
-              className="min-w-[200px] px-4 py-3 bg-gray-800 hover:bg-gray-900 text-white text-sm font-semibold rounded-md"
+              className="lg:min-w-[200px] w-full px-4 py-3 bg-gray-800 hover:bg-gray-900 text-white text-sm font-semibold rounded-md"
               onClick={handleOrderNow}
             >
               Add to Cart
             </button>
             <button
               type="button"
-              className="min-w-[200px] px-4 py-3 bg-pink-600 hover:bg-pink-700 text-white text-sm font-semibold rounded-md"
+              className="lg:min-w-[200px] w-full  px-4 py-3 bg-pink-600 hover:bg-pink-700 text-white text-sm font-semibold rounded-md"
               onClick={handleOrderNow}
             >
               Order Now

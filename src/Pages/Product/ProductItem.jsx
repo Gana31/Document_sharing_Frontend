@@ -11,7 +11,7 @@ const ProductItem = ({ id, image, name, price }) => {
       className="text-gray-700 cursor-pointer"
       to={`productPage/${id}`}
     >
-      <div className="w-full h-full flex flex-col items-center bg-white border rounded-lg overflow-hidden shadow-sm">
+      <div className="w-full h-full flex flex-col items-center bg-white border rounded-sm overflow-hidden shadow-sm">
         {/* Image container */}
         <div className="w-full h-60 bg-white flex items-center justify-center overflow-hidden group">
           <img
