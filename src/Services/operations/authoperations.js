@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { LOGIN_API, SIGNUP_API } from "../../data/constant";
+import { LOGIN_API, LOGOUT, SIGNUP_API } from "../../data/constant";
 import { setLoading, setLoginData } from "../../slices/authslice"
 import apiClient from "../ApiConnect";
 import { setUserProducts } from "../../slices/productslice";
@@ -62,13 +62,26 @@ export function login(email, password, navigate) {
 
 
   export function logout(navigate) {
-    return (dispatch) => {
-      dispatch(setLoginData({ user: null, accessToken: null }))
-      dispatch(setUserProducts([])); 
-      localStorage.removeItem("accessToken")
-      localStorage.removeItem("user")
-      toast.success("Logged Out")
+    return async (dispatch) => {
+
+      try {
+        const response = await apiClient.post(LOGOUT);
+          if (response.data.success) {
+            dispatch(setLoginData({ user: null, accessToken: null }))
+            dispatch(setUserProducts([])); 
+            localStorage.removeItem("accessToken")
+            localStorage.removeItem("user")
+            toast.success("Logged Out")
+            navigate("/")  
+          } else {
+            console.log("reseger reposnse",response)
+            toast.error(response.data.message);
+          }
+     
+    }catch (error) {
+      // console.log("LOGIN API ERROR............", error)
+      toast.error(error.response.data.message ||"Login Failed")
       navigate("/")
     }
   }
-  
+}
