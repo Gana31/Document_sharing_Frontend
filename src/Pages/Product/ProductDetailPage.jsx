@@ -4,6 +4,7 @@ import { GetProductId } from '../../Services/operations/productoperiton';
 import { useParams } from 'react-router-dom';
 import { addToCart } from '../../Services/operations/cartopertion';
 import LoadingSpinner from '../../Component/Common/LoadingSpinner';
+import { toast } from 'react-toastify';
 
 function ProductDetailPage() {
   const id = useParams(); // Extract product ID from the route params
@@ -32,9 +33,16 @@ function ProductDetailPage() {
   };
 
   const handleOrderNow = () => {
-    if (singleProduct) {
-      dispatch(addToCart(singleProduct, quantity)); // Dispatch action to add product to cart
+    if (singleProduct && quantity > 0) {
+      if (quantity <= singleProduct.stock) {
+        dispatch(addToCart(singleProduct, quantity)); // Dispatch action to add product to cart
+      } else {
+        toast.error(`Cannot add more than ${singleProduct.stock} copies.`);
+      }
+    }else{
+      toast.error(`Atleast add 1 copies.`);
     }
+    
   };
   if(loading){
     return ( <div className='w-[100vw] h-[100vh]'>
