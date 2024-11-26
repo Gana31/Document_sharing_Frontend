@@ -7,12 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // or use your preferred method for API calls
 import assets from '../../assets';
 import { ProccedToBuy } from '../../Services/operations/cartopertion';
+import { toast } from 'react-toastify';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { products } = useSelector((state) => state.cart);
-  const { user } = useSelector((state) => state.auth);
+  const { user,accessToken } = useSelector((state) => state.auth);
   const currency = '₹';
 
   // Calculate subtotal
@@ -36,6 +37,10 @@ const Cart = () => {
 
   // Handle Proceed to Checkout and make API call
   const handleCheckout = async () => {
+    if(!accessToken){
+      toast.error("You cannot buy Without Login");
+      navigate("/login")
+    }
     dispatch(ProccedToBuy(user.id,products,total))
   };
 
@@ -45,7 +50,7 @@ const Cart = () => {
         <Title text1={'YOUR'} text2={'CART'} />
       </div>
 
-      <div className="w-full flex flex-col lg:flex-row">
+      <div className="w-full flex px-5 flex-col lg:flex-row">
         <div className="w-full lg:w-[60%]">
           {products.map((product, index) => (
             <div

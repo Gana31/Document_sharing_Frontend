@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import assets from '../../assets';
+import { MdManageAccounts, MdOutlineManageAccounts } from 'react-icons/md';
 
 
 const Sidebar = () => {
@@ -32,6 +33,16 @@ const Sidebar = () => {
           />
           <p className="hidden md:block">List Items</p>
         </NavLink>
+        <NavLink
+          className={({ isActive }) =>
+            `${navLinkStyles} ${isActive ? 'active font-semibold' : ''}`
+          }
+          to="/manage-category"
+        >
+          <p className=""><MdOutlineManageAccounts size={30}  /></p>
+          <p className="hidden md:block">Manage Categories</p>
+        </NavLink>
+       
       </div>
     </div>
   );

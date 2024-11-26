@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     product: [],
+    singleProduct :[],
     userProducts : [],
     categories : []
 };
@@ -16,7 +17,7 @@ const productslice = createSlice({
         },
         setSingleProduct(state, action) {
             const product = action.payload;
-            state.product = product;
+            state.singleProduct = product;
         },
         setCategories(state, action) {
             const categories = action.payload;

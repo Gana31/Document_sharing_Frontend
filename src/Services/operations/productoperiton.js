@@ -2,12 +2,13 @@ import { toast } from "react-toastify";
 import { GET_CATEGORIES, GET_USER_PRODUCT, PRODUCTBYID, PRODUCTLIST } from "../../data/constant";
 import { setLoading } from "../../slices/authslice";
 import apiClient from "../ApiConnect";
-import { setCategories, setProduct, setUserProducts } from "../../slices/productslice";
+import { setCategories, setProduct, setSingleProduct, setUserProducts } from "../../slices/productslice";
 
 export function GetALLProduct() {
   return async (dispatch) => {
-    dispatch(setLoading(true))
+
     try {
+      dispatch(setLoading(true))
       const response = await apiClient.get(PRODUCTLIST);
       if (response.data.success) {
         dispatch(setProduct(response.data.data))
@@ -25,7 +26,9 @@ export function GetALLProduct() {
       console.log("LOGIN API ERROR............", error)
       toast.error("Login Failed")
     }
-    dispatch(setLoading(false))
+    finally{
+      dispatch(setLoading(false))
+    }
 
   }
 }
@@ -36,11 +39,8 @@ export function GetProductId(id) {
     dispatch(setLoading(true))
     try {
       const response = await apiClient.get(`${PRODUCTBYID}/${id.product}`);
-      // console.log(response.data)
       if (response.data.success) {
-        return response.data
-        // console.log(response)
-
+        dispatch(setSingleProduct(response.data.data))
       } else {
         // console.log("lognn reposnse",response)
         toast.error(response.data.message);
@@ -74,8 +74,9 @@ export function SetUserProudct(id) {
     } catch (error) {
       console.log("LOGIN API ERROR............", error)
       toast.error(error.response.data.message || "error while proudct fetching")
+    }finally{
+      dispatch(setLoading(false))
     }
-    dispatch(setLoading(false))
 
   }
 }

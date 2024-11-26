@@ -3,9 +3,12 @@ import ProductItem from './ProductItem';
 import Title from '../../Component/Title';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetALLProduct } from '../../Services/operations/productoperiton';
+import LoadingSpinner from '../../Component/Common/LoadingSpinner';
+import { setLoading } from '../../slices/authslice';
 
 const ProductList = () => {
   const { product, categories } = useSelector((state) => state.product); 
+  const {loading } = useSelector((state) => state.auth); 
   const [showModal, setShowModal] = useState(null); 
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortType, setSortType] = useState('relevant');
@@ -16,8 +19,8 @@ const ProductList = () => {
     dispatch(GetALLProduct());
   }, [dispatch]);
 
-
   const filteredProducts = useMemo(() => {
+    setLoading(true)
     let filtered = [...product];
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((item) =>
@@ -31,18 +34,31 @@ const ProductList = () => {
     } else if (sortType === 'high-low') {
       filtered.sort((a, b) => b.price - a.price);
     }
-
+    setLoading(false)
     return filtered;
   }, [product, selectedCategories, sortType]);
 
   const toggleCategory = (e) => {
+    setLoading(true)
     const value = e.target.value;
     setSelectedCategories((prev) =>
       prev.includes(value) ? prev.filter((cat) => cat !== value) : [...prev, value]
     );
+    setLoading(false)
   };
 
+  const filteredCategories = categories.filter((cat) => {
+
+    const productCount = product.filter((prod) => prod.categories.some((c) => c.name === cat.name)).length;
+    return productCount > 0; 
+  });
+
   const closeModal = () => setShowModal(null);
+  if(loading){
+    return ( <div className='w-[100vw] h-[100vh]'>
+      <LoadingSpinner/>
+    </div>)
+  }
 
   return (
     <div className="flex flex-col lg:pt-10 pt-4 border-t m-2 relative">
@@ -67,7 +83,7 @@ const ProductList = () => {
           <div className="border border-gray-300 p-4">
             <h3 className="text-lg font-semibold mb-4">CATEGORIES</h3>
             <div className="flex flex-col gap-2 text-sm">
-              {categories.map((cat, index) => (
+              {filteredCategories.map((cat, index) => (
                 <label key={index} className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -96,6 +112,7 @@ const ProductList = () => {
                 id={item.id}
                 price={item.price}
                 image={item.images}
+                location={"productPage"}
               />
             ))
           )}

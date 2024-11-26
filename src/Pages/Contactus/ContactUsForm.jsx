@@ -46,7 +46,7 @@ const ContactUsForm = () => {
             {...register("firstname", { required: true })}
           />
           {errors.firstname && (
-            <span className="-mt-1 text-[12px] text-yellow-100">
+            <span className="-mt-1 text-[20px] text-red-700">
               {typeof errors.firstname === "string" ? errors.firstname : "Please enter your name."}
             </span>
           )}
@@ -62,6 +62,11 @@ const ContactUsForm = () => {
             className="rounded-lg bg-gray-300 p-3 text-[16px] leading-[24px] text-black shadow-[0_1px_0_0] shadow-white/50 placeholder:text-black focus:outline-none"
             {...register("lastname")}
           />
+          {errors.firstname && (
+            <span className="-mt-1 text-[20px] text-red-700">
+              {typeof errors.lastname === "string" ? errors.lastname : "Please enter your Lastname."}
+            </span>
+          )}
         </div>
       </div>
 
@@ -77,7 +82,7 @@ const ContactUsForm = () => {
           {...register("email", { required: true })}
         />
         {errors.email && (
-          <span className="-mt-1 text-[12px] text-yellow-100">
+          <span className="-mt-1 text-[20px] text-red-700">
             {typeof errors.email === "string" ? errors.email : "Please enter your Email address."}
           </span>
         )}
@@ -120,7 +125,7 @@ const ContactUsForm = () => {
           </div>
         </div>
         {errors.phoneNo?.message && (
-          <span className="-mt-1 text-[12px] text-yellow-100">
+          <span className="-mt-1 text-[20px] text-red-700">
             {typeof errors.phoneNo.message === "string" ? errors.phoneNo.message : ""}
           </span>
         )}
@@ -138,17 +143,17 @@ const ContactUsForm = () => {
           className="rounded-lg bg-gray-300 p-3 text-[16px] leading-[24px] text-black shadow-[0_1px_0_0] shadow-white/50 placeholder:text-black focus:outline-none"
           {...register("message", { required: true })}
         />
-        {errors.message?.message && (
-          <span className="-mt-1 text-[12px] text-yellow-100">
-            {typeof errors.message.message === "string" ? errors.message.message : "Please enter your Message."}
-          </span>
-        )}
+       {errors.message && (
+            <span className="-mt-1 text-[20px] text-red-700">
+              {typeof errors.message === "string" ? errors.message : "Please enter your Message."}
+            </span>
+          )}
       </div>
 
       <button
         disabled={loading}
         type="submit"
-        className={`rounded-md bg-yellow-400 px-6 py-3 text-center text-[13px] font-bold text-black shadow-[2px_2px_0px_0px_rgba(255,255,255,0.18)] 
+        className={`rounded-md  bg-black text-white px-6 py-3 text-center text-[13px] font-bold  shadow-[2px_2px_0px_0px_rgba(255,255,255,0.18)] 
          ${
            !loading &&
            "transition-all duration-200 hover:scale-95 hover:shadow-none"

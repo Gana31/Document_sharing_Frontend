@@ -21,3 +21,18 @@ export const UPDATE_PRODUCT="/updateproduct"
 export const CREATE_ORDER="/createOrder"
 
 export const USER_PREVIOUS_ORDERS="/getAllPreviousOrders"
+
+export const GET_CATEGORIES_BY_USERID="/getProductByUserId"
+
+export const ADD_CATEGORY="/createCategory"
+
+export const DELETE_CATEGORY="/deleteCategory"
+
+export const UPDATE_CATEGORY="/updateCategory"
+
+
+export const GET_USER_PROFILE="/userDetails"
+
+export const UPDATE_USER_PROFILE="/userupdate"
+
+

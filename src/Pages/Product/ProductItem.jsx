@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-const ProductItem = ({ id, image, name, price }) => {
+const ProductItem = ({ id, image, name, price,location }) => {
   const currency = '₹';
   const maxNameLength = 20;
   const imageUrl = image && image.length > 0 ? image[0].url : 'default_image_url_here';
@@ -9,7 +9,7 @@ const ProductItem = ({ id, image, name, price }) => {
   return (
     <Link
       className="text-gray-700 cursor-pointer"
-      to={`productPage/${id}`}
+      to={`${location}/${id}`}
     >
       <div className="w-full h-full flex flex-col items-center bg-white border rounded-sm overflow-hidden shadow-sm">
         {/* Image container */}

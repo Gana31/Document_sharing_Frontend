@@ -1,65 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { GetProductId } from '../../Services/operations/productoperiton';
 import { useParams } from 'react-router-dom';
 import { addToCart } from '../../Services/operations/cartopertion';
+import LoadingSpinner from '../../Component/Common/LoadingSpinner';
 
 function ProductDetailPage() {
-  const id = useParams();
+  const id = useParams(); // Extract product ID from the route params
   const dispatch = useDispatch();
-  const [product, setProduct] = useState(null);
+  const {loading } = useSelector((state) => state.auth); 
+  const { singleProduct } = useSelector((state) => state.product); // Get the single product from Redux
   const [selectedImage, setSelectedImage] = useState("");
   const [imageKey, setImageKey] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      const data = await dispatch(GetProductId(id));
-      if (data) {
-        console.log(data)
-        setProduct(data.data);
-        setSelectedImage(data.data?.images[0]?.url);
-      }
-    };
+    dispatch(GetProductId(id)); 
 
-    fetchProduct();
   }, [dispatch]);
 
-  if (!product) {
-    return <div className="p-8 text-center">Loading...</div>;
-  }
+  useEffect(() => {
+    if (singleProduct?.images?.length > 0) {
+      setSelectedImage(singleProduct.images[0].url);
+    }
+  }, [singleProduct]);
+
 
   const handleImageChange = (image) => {
-    // console.log(image)
     setImageKey(image.id);
     setSelectedImage(image.url);
   };
+
   const handleOrderNow = () => {
-    if (product) {
-      dispatch(addToCart(product, quantity)); // Dispatch action to add product to cart
+    if (singleProduct) {
+      dispatch(addToCart(singleProduct, quantity)); // Dispatch action to add product to cart
     }
   };
+  if(loading){
+    return ( <div className='w-[100vw] h-[100vh]'>
+      <LoadingSpinner/>
+    </div>)
+  }
+
+
   return (
     <div className="font-sans lg:p-8 p-3 mt-10 lg:max-w-6xl max-w-2xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Product images */}
         <div className="text-center">
           <div className="lg:h-[560px] overflow-hidden">
             <img
-              key={imageKey} // Ensure animation triggers when image changes
-              src={selectedImage} // Use the selected image here
-              alt={product.title}
+              key={imageKey}
+              src={selectedImage}
+              alt={singleProduct.title}
               className="lg:w-11/12 w-full h-full rounded-md object-contain object-center transition-opacity duration-500 ease-in-out opacity-100"
             />
           </div>
           <div className="flex flex-wrap gap-4 justify-center mt-4">
-            {product?.images?.map((image, index) => (
+            {singleProduct?.images?.map((image, index) => (
               <img
                 key={index}
-                src={image.url}  // Ensure `image.url` is used here
+                src={image.url}
                 alt={`Product Image ${index + 1}`}
                 className="w-16 cursor-pointer rounded-md hover:opacity-75"
-                onClick={() => handleImageChange(image)} // Update selected image on click
+                onClick={() => handleImageChange(image)}
               />
             ))}
           </div>
@@ -67,16 +71,18 @@ function ProductDetailPage() {
 
         {/* Product details */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">{product.title}</h2>
+          <h2 className="text-2xl font-bold text-gray-800">{singleProduct.title}</h2>
 
           <div className="flex items-center gap-4 mt-4">
-            <span className="text-3xl font-bold text-gray-800">₹{product.price}</span>
-            {product.origialprice && <span className="text-lg text-gray-500 line-through">₹{product.originalPrice}</span>}
+            <span className="text-3xl font-bold text-gray-800">₹{singleProduct.price}</span>
+            {singleProduct.originalPrice && (
+              <span className="text-lg text-gray-500 line-through">₹{singleProduct.originalPrice}</span>
+            )}
           </div>
 
           <div className="mt-4">
             <p className="text-sm text-gray-600">
-              <strong>{product.stock}</strong> copies available.
+              <strong>{singleProduct.stock}</strong> copies available.
             </p>
             <p className="text-sm text-gray-600 mt-2">Tax included</p>
           </div>
@@ -90,7 +96,7 @@ function ProductDetailPage() {
               id="quantity"
               type="number"
               min="1"
-              max={product.stock}
+              max={singleProduct.stock}
               defaultValue="1"
               className="mt-2 p-2 border rounded-md w-20"
               onChange={(e) => setQuantity(e.target.value)}
@@ -116,16 +122,12 @@ function ProductDetailPage() {
           </div>
 
           {/* Rating & Reviews */}
-          <div className="flex items-center gap-2 mt-8">
-            <span className="text-pink-500 font-semibold">{product.rating}</span>
-            <span className="text-sm text-gray-600">({product.reviews} reviews)</span>
-          </div>
-
+         
           {/* Product Description */}
           <hr className="my-8" />
           <div>
             <h3 className="text-xl font-semibold text-gray-800">Description</h3>
-            <p className="text-sm text-gray-600 mt-4">{product.description}</p>
+            <p className="text-sm text-gray-600 mt-4">{singleProduct.description}</p>
           </div>
 
           {/* Features */}
@@ -139,24 +141,6 @@ function ProductDetailPage() {
             </ul>
           </div>
         </div>
-      </div>
-
-      {/* Reviews Section */}
-      <div className="mt-10">
-        <h3 className="text-xl font-semibold text-gray-800">Customer Reviews</h3>
-        {product?.reviewDetails?.length === 0 ? (
-          <p className="text-sm text-gray-600 mt-4">No reviews yet.</p>
-        ) : (
-          product?.reviewDetails?.map((review, index) => (
-            <div key={index} className="mt-4 p-4 border rounded-md shadow-sm">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-gray-800">{review.name}</span>
-                <span className="text-yellow-500">{"★".repeat(review.rating)}</span>
-              </div>
-              <p className="text-sm text-gray-600 mt-2">{review.comment}</p>
-            </div>
-          ))
-        )}
       </div>
     </div>
   );

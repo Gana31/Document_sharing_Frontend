@@ -3,23 +3,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import Title from '../../Component/Title';
 import ProductItem from '../Product/ProductItem';
 import { GetALLProduct } from '../../Services/operations/productoperiton';
+import LoadingSpinner from '../../Component/Common/LoadingSpinner';
 
 const NewProducts = () => {
-  const { product } = useSelector((state) => state.product);
+  const { loading } = useSelector((state) => state.auth);  
+  const { product } = useSelector((state) => state.product);  
   const dispatch = useDispatch();
 
   const [allProducts, setAllProducts] = useState([]);
 
-  // Fetch products when the component mounts
-  useEffect(() => {
-    dispatch(GetALLProduct());
-  }, [dispatch]);
 
-  // After fetching products, update the state
+  useEffect(() => {
+    if (!product || product.length === 0) {  
+      dispatch(GetALLProduct());
+    }
+  }, [dispatch, product]);
+
+
   useEffect(() => {
     if (product && product.length > 0) {
-      setAllProducts(product.slice(0, 4));  // Update with the correct number of products if needed
-      console.log(allProducts);
+      setAllProducts(product.slice(0, 4));
     }
   }, [product]);
 
@@ -34,23 +37,27 @@ const NewProducts = () => {
 
       {/* Display All Products */}
       <div className="w-3/4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 gap-y-6">
-        {allProducts.length > 0 ? (
-          allProducts.map((item, index) => {
-            // Ensure the image URL exists before trying to render the image
-            return (
+        {loading ? (
+          <div className="col-span-full text-center text-lg font-semibold text-gray-500">
+            <LoadingSpinner/>
+          </div>
+        ) : (
+          allProducts.length > 0 ? (
+            allProducts.map((item, index) => (
               <ProductItem
                 key={index}
                 id={item.id}
                 name={item.title}
                 image={item.images}  
                 price={item.price}
+                location={"productlist/productPage"}
               />
-            );
-          })
-        ) : (
-          <div className="col-span-full text-center text-lg font-semibold text-gray-500">
-            Loading products...
-          </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center text-lg font-semibold text-gray-500">
+              No products found.
+            </div>
+          )
         )}
       </div>
     </div>
