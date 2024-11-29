@@ -139,7 +139,7 @@ function ProductDetailPage() {
           </div>
 
           {/* Features */}
-          <hr className="my-8" />
+          {/* <hr className="my-8" />
           <div>
             <h3 className="text-xl font-semibold text-gray-800">Features</h3>
             <ul className="list-disc ml-8 mt-4 text-sm text-gray-600">
@@ -147,7 +147,7 @@ function ProductDetailPage() {
               <li>Perfect for fans of science fiction and adventure.</li>
               <li>Engaging and thought-provoking narrative.</li>
             </ul>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
