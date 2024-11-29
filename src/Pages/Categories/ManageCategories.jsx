@@ -74,7 +74,6 @@ const ManageCategories = () => {
         // Add category API call
         response = await apiClient.post(ADD_CATEGORY, formData);
       }
-      console.log(response)
       if (response.data.success) {
         toast.success(response.data.message);
         setname('');

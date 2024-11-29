@@ -36,4 +36,4 @@ export const GET_USER_PROFILE="/userDetails"
 
 export const UPDATE_USER_PROFILE="/userupdate"
 
-
+export const CONTACT_US="/createContactus"

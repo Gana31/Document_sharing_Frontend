@@ -27,7 +27,6 @@ export function login(email, password, navigate) {
       } catch (error) {
         console.log("LOGIN API ERROR............", error)
         toast.error(error.response.data.message || "Login Failed")
-        navigate("/")
       }
       dispatch(setLoading(false))
 

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import apiClient from "../../Services/ApiConnect";
-import { GET_USER_PROFILE, UPDATE_USER_PROFILE } from "../../data/constant";
+import { UPDATE_USER_PROFILE } from "../../data/constant";
 import LoadingSpinner from "../../Component/Common/LoadingSpinner";
-import { setLoading } from "../../slices/authslice";
+import { setLoading, updateUser } from "../../slices/authslice"; // Import updateUser action
 import CountryCode from "../../data/countrycode.json";
 import { Navigate } from "react-router-dom";
 
@@ -13,10 +13,8 @@ const img_urls = [
   "https://res.cloudinary.com/dnyhn7loo/image/upload/v1732534320/profile_images/xyrs8o9vgo8qjhz1dlaw.webp",
   "https://res.cloudinary.com/dnyhn7loo/image/upload/v1732534320/profile_images/lhwlf42g7q5wzqafrkfu.webp",
   "https://res.cloudinary.com/dnyhn7loo/image/upload/v1732534320/profile_images/mzsr5qkbppzbix9xl89w.webp",
-  "https://res.cloudinary.com/dnyhn7loo/image/upload/v1732534320/profile_images/kpt4t3bkjkvi63gtaduy.webp"
+  "https://res.cloudinary.com/dnyhn7loo/image/upload/v1732534320/profile_images/kpt4t3bkjkvi63gtaduy.webp",
 ];
-
-
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -29,9 +27,7 @@ const Profile = () => {
     mobile_no: "",
     country: "",
     gender: "",
-    userid: "",
   });
-  const [initialData, setInitialData] = useState(null); // To store the initial data
   const [showGallery, setShowGallery] = useState(false);
   const [errors, setErrors] = useState({});
   const [search, setSearch] = useState("");
@@ -39,60 +35,21 @@ const Profile = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        if (!user.name || !user.avatar || !user.address || !user.mobile_no || !user.country || !user.gender) {
-          // If any required field is missing, fetch data
-          dispatch(setLoading(true));
-          const response = await apiClient.get(`${GET_USER_PROFILE}/${user.id}`);
-          const { data } = response.data;
-
-          const profileData = {
-            name: data.name || "",
-            avatar: data.avatar || img_urls[0],
-            address: data.address || "",
-            mobile_no: data.mobile_no || "",
-            country: data.country || "",
-            gender: data.gender || "",
-          };
-
-          setFormData(profileData);
-          setInitialData(profileData); // Save initial data for comparison
-          setSearch(data.country);
-        } else {
-          // If user has all the data, set it from the Redux store
-          setFormData({
-            name: user.name,
-            avatar: user.avatar || img_urls[0],
-            address: user.address || "",
-            mobile_no: user.mobile_no || "",
-            country: user.country || "",
-            gender: user.gender || "",
-            userid: user.id,
-          });
-          setInitialData({
-            name: user.name,
-            avatar: user.avatar || img_urls[0],
-            address: user.address || "",
-            mobile_no: user.mobile_no || "",
-            country: user.country || "",
-            gender: user.gender || "",
-          });
-          setSearch(user.country);
-        }
-      } catch (error) {
-       const message= user ? "Failed to load profile details" : "You Are Not login to Our Website"
-        toast.error(message);
-      } finally {
-        dispatch(setLoading(false));
-      }
-    };
-
-    fetchProfile();
-  }, [dispatch, user]);
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        avatar: user.avatar || img_urls[0],
+        address: user.address || "",
+        mobile_no: user.mobile_no || "",
+        country: user.country || "",
+        gender: user.gender || "",
+      });
+      setSearch(user.country || "");
+    }
+  }, [user]);
 
   if (!user) {
-    return <Navigate to="/login" />;  // Redirect to login page if no user data
+    return <Navigate to="/login" />; // Redirect to login page if no user data
   }
 
   const handleImageSelect = (url) => {
@@ -120,47 +77,54 @@ const Profile = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const filteredCountries = CountryCode.filter((c) =>
-    c.country.toLowerCase().includes(search.toLowerCase())
-  )
-
-  const getChangedFields = () => {
-    const updatedFields = {};
-    Object.keys(formData).forEach((key) => {
-      if (formData[key] !== initialData[key]) {
-        updatedFields[key] = formData[key];
-      }
-    });
-    return updatedFields;
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Validate form before proceeding
     if (!validateForm()) return;
+  
+    // Prepare changes object with only modified fields
+    const changes = {};
+  
+    // Check for changes in formData
+    if (formData.name !== user.name) changes.name = formData.name;
+    if (formData.avatar !== user.avatar) changes.avatar = formData.avatar;
+    if (formData.address !== user.address) changes.address = formData.address;
+    if (formData.mobile_no !== user.mobile_no) changes.mobile_no = formData.mobile_no;
+    if (formData.country !== user.country) changes.country = formData.country;
+    if (formData.gender !== user.gender) changes.gender = formData.gender;
+  
+    // If there are changes, send them to the backend
+    if (Object.keys(changes).length > 0) {
+      try {
+        setLoader(true);
+        const response = await apiClient.put(
+          `${UPDATE_USER_PROFILE}/${user.id}`,
+          changes // Send only the changes to the backend
+        );
+  
+        if (response.data.success) {
+          toast.success("Profile updated successfully");
 
-    const updatedFields = getChangedFields();
-
-    // If no fields have changed, skip the API call
-    if (Object.keys(updatedFields).length === 0) {
-      toast.info("No changes to update");
-      return;
-    }
-
-    try {
-      setLoader(true);
-      const response = await apiClient.put(`${UPDATE_USER_PROFILE}/${user.id}`, updatedFields);
-      if (response.data.success) {
-        toast.success("Profile updated successfully");
-        setInitialData(formData); // Update initialData after successful update
-      } else {
-        toast.error(response.data.message);
+          dispatch(updateUser(response.data.data)); 
+          localStorage.setItem("user", JSON.stringify(response.data.data)); 
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        toast.error(error?.response?.data?.message || "Failed to update profile");
+      } finally {
+        setLoader(false);
       }
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Failed to update profile");
-    } finally {
-      setLoader(false);
+    } else {
+      toast.info("No changes detected.");
     }
   };
+
+  const filteredCountries = CountryCode.filter((c) =>
+    c.country.toLowerCase().includes(search?.toLowerCase())
+  );
 
   if (loading) {
     return <LoadingSpinner />;
@@ -201,11 +165,10 @@ const Profile = () => {
         )}
 
         {/* Other Form Fields */}
+        <div className="w-full">
+          <label className="block mb-2">{user.email}</label>
+        </div>
 
-
-        <div className="w-[100%] flex flex-col items-center justify-center max-w-md"><label className="block mb-2 items-center justify-center">{user.email}</label></div>
-
-        {/* Name */}
         <div className="w-full">
           <label className="block mb-2">Name</label>
           <input
@@ -218,7 +181,6 @@ const Profile = () => {
           {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
 
-        {/* Address */}
         <div className="w-full">
           <label className="block mb-2">Address</label>
           <textarea
@@ -232,7 +194,6 @@ const Profile = () => {
           )}
         </div>
 
-        {/* Mobile Number */}
         <div className="w-full">
           <label className="block mb-2">Mobile Number</label>
           <input
@@ -248,7 +209,6 @@ const Profile = () => {
           )}
         </div>
 
-        {/* Country */}
         <div className="w-full relative">
           <label className="block mb-2">Country</label>
           <input
@@ -268,8 +228,9 @@ const Profile = () => {
                 filteredCountries.map((c, index) => (
                   <div
                     key={index}
-                    className={`px-3 py-2 cursor-pointer hover:bg-gray-200 ${formData.country === c.country ? "bg-gray-300" : ""
-                      }`}
+                    className={`px-3 py-2 cursor-pointer hover:bg-gray-200 ${
+                      formData.country === c.country ? "bg-gray-300" : ""
+                    }`}
                     onClick={() => {
                       setSearch(c.country);
                       setFormData({ ...formData, country: c.country });
@@ -289,7 +250,6 @@ const Profile = () => {
           )}
         </div>
 
-        {/* Gender */}
         <div className="w-full">
           <label className="block mb-2">Gender</label>
           <select
@@ -299,19 +259,19 @@ const Profile = () => {
             className="w-full px-3 py-2 border rounded"
           >
             <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
           </select>
           {errors.gender && (
-            <p className="text-red-500 text-sm">{errors.country}</p>
+            <p className="text-red-500 text-sm">{errors.gender}</p>
           )}
         </div>
 
         <button
           type="submit"
           className="w-full py-3 bg-black text-white rounded-lg"
-          disabled={loading}
+          disabled={loader}
         >
           {loader ? <LoadingSpinner size="w-5 h-5" color="white" /> : "Save Profile"}
         </button>
@@ -321,7 +281,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-
-
-
