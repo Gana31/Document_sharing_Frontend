@@ -9,7 +9,7 @@ export function addToCart(product, quantity) {
     return async (dispatch) => {
       dispatch(setLoading(true))
       try {
-        console.log("Dispatching addOrUpdateProduct with", { product, quantity });
+        // console.log("Dispatching addOrUpdateProduct with", { product, quantity });
         dispatch(addOrUpdateProduct({ product, quantity }));
       toast.success("Product added to cart!");
       } catch (error) {
