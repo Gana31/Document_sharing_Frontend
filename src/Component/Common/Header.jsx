@@ -61,15 +61,19 @@ const Header = () => {
     };
   }, []);
 
+  const logoutHandler = () => {
+    dispatch(logout(navigate));
+  };
+
   return (
     <div className="relative">
       {/* Header Bar */}
       <div className="bg-white shadow z-10">
-        <div className="flex items-center px-5 justify-between py-5 font-medium h-16">
+        <div className="flex items-center justify-between px-5 py-5 font-medium h-16">
           {/* Logo */}
-          <p>
-            <Link to="/">BOOk</Link>
-          </p>
+          <Link to="/">
+            <p>BOOk</p>
+          </Link>
 
           {/* Navigation Links */}
           <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
@@ -133,7 +137,7 @@ const Header = () => {
                   </p>
                   <p
                     className="px-4 py-2 cursor-pointer hover:text-black"
-                    onClick={() => dispatch(logout(navigate))}
+                    onClick={logoutHandler}
                   >
                     Logout
                   </p>
@@ -157,68 +161,49 @@ const Header = () => {
             />
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      <div
-        className={`absolute top-0 right-0 bg-white z-20 shadow-md sm:hidden transition-transform duration-300 ease-in-out ${
-          visible ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        style={{ width: '100%', height: '100vh' }}
-      >
-        <div className="flex justify-between items-center p-4">
-          {/* Back Button to Close the Menu */}
-          <button
-            onClick={() => setVisible(false)}
-            className="w-5 h-5 cursor-pointer"
-            aria-label="Close Menu"
-          >
-            {/* Back icon as a button (can be an SVG or FontAwesome) */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="w-5 h-5"
-              aria-hidden="true"
+        {/* Mobile Menu */}
+        <div
+          className={`absolute top-0 right-0  bg-white z-50 shadow-md sm:hidden overflow-x-hidden transition-width duration-300 
+            ${visible ? 'w-full' : 'w-0'
+            }`}
+
+        >
+          <div className="flex flex-col h-[100vh] text-gray-600">
+            <div
+              onClick={() => setVisible(false)}
+              className="flex items-center gap-4 p-3 cursor-pointer"
+              aria-label="Close menu"
             >
-              <path
-                d="M19 12H5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-              <path
-                d="M12 5l-7 7 7 7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
-          </button>
-          <p className="text-lg font-medium">Menu</p>
+              <img
+                src={assets.dropdownIcon}
+                className="h-4 rotate-180"
+                alt="Back"
+              />
+              <p>Back</p>
+            </div>
+              <NavLink to="/" className="py-2 pl-6 border" onClick={() => setVisible(false) }>
+                HOME
+              </NavLink>
+              <NavLink to="/productlist" className="py-2 pl-6 border" onClick={() => setVisible(false)}>
+                COLLECTION
+              </NavLink>
+              <NavLink to="/about" className="py-2 pl-6 border" onClick={() => setVisible(false)}>
+                ABOUT
+              </NavLink>
+              <NavLink to="/contact" className="py-2 pl-6 border" onClick={() => setVisible(false)}>
+                CONTACT
+              </NavLink>
+
+          </div>
         </div>
-        <ul className="flex flex-col gap-4 p-4 text-sm text-gray-700 z-90">
-          <NavLink to="/" onClick={() => setVisible(false)}>
-            <p>HOME</p>
-          </NavLink>
-          <NavLink to="/productlist" onClick={() => setVisible(false)}>
-            <p>COLLECTION</p>
-          </NavLink>
-          <NavLink to="/about" onClick={() => setVisible(false)}>
-            <p>ABOUT</p>
-          </NavLink>
-          <NavLink to="/contact" onClick={() => setVisible(false)}>
-            <p>CONTACT</p>
-          </NavLink>
-        </ul>
       </div>
 
       {/* Search Box */}
       {location.pathname === '/productlist' && (
         <div
-          className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${
-            searchVisible ? 'max-h-40' : 'max-h-0'
-          }`}
+          className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${searchVisible ? 'max-h-40' : 'max-h-0'
+            }`}
         >
           <div className="bg-gray-100 py-4 shadow-md" ref={searchBoxRef}>
             <div className="flex justify-center">

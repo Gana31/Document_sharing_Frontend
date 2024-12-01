@@ -52,6 +52,7 @@ const AddProduct = () => {
     fetchCategories();
 
     if (productToEdit) {
+      console.log(productToEdit)
       setImages(productToEdit.images || []);
       if (productToEdit.access_mode === 'online' && productToEdit.pdfs?.length > 0) {
         setDocumentFile(productToEdit.pdfs[0]);
@@ -140,7 +141,7 @@ const AddProduct = () => {
     }
 
     try {
-     
+      console.log(...formData.entries())
       const url = productToEdit ? `${UPDATE_PRODUCT}/${productToEdit.id}` : ADDPRODUCT;
       const response = productToEdit
         ? await apiClient.put(url, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
@@ -190,10 +191,12 @@ const AddProduct = () => {
 
       {/* Document Upload for Online Mode */}
       {accessMode === 'online' && (
-  <div className='flex gap-x-5 items-center'>
+  <div className='flex md:flex-row flex-col gap-x-5 items-center'>
    
-    <input type="file" onChange={handleDocumentUpload} className='h-7' />
+    <div>
+    <input type="file" onChange={handleDocumentUpload} className='h-7 w-full mb-5 ' />
     {errors.documentFile && <p className="text-red-500 text-sm">{errors.documentFile}</p>}
+    </div>
 
     {documentFile && !(documentFile instanceof File) && (
       <div className=" flex mb-2">
@@ -210,7 +213,7 @@ const AddProduct = () => {
        </div>
         <button
           type="button"
-          className="ml-2 px-3 py-1 text-white bg-red-500 rounded"
+          className="text-red-500 bg-transparent border-2 border-red-500 px-4 py-2 rounded-full hover:bg-red-500 hover:text-white"
           onClick={() => setDocumentFile(null)} // Allow removing the document
         >
           Remove
