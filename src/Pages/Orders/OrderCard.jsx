@@ -8,14 +8,17 @@ export function OrderCard({ order }) {
       currency: 'INR',
     }).format(value);
 
-  const formatDate = (date) =>
-    date.toLocaleDateString('en-IN', {
+  // Update formatDate to also return the time
+  const formatDate = (date) => {
+    const options = {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    });
+    };
+    return date.toLocaleDateString('en-IN', options);
+  };
 
-  const truncateText = (text, maxLength) => 
+  const truncateText = (text, maxLength) =>
     text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
 
   // Update the DownloadButton to accept multiple URLs from pdflink and trigger a download
@@ -67,7 +70,9 @@ export function OrderCard({ order }) {
         <div className="flex justify-between items-center mb-4">
           <div>
             <p className="text-sm text-gray-500">Order ID: {order.orderId}</p>
-            <p className="text-sm text-gray-500">Date: {formatDate(order.orderDate)}</p>
+            <p className="text-sm text-gray-500">Date: {formatDate(new Date(order.orderDate))}</p>
+            {/* Display the formatted time below the date */}
+            <p className="text-sm text-gray-500">Time: {new Date(order.orderDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}</p>
           </div>
           {/* Show the DownloadButton only if there are PDF links */}
           {documentUrls.length > 0 && <DownloadButton documentUrls={documentUrls} />}

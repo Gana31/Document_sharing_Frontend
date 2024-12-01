@@ -23,7 +23,7 @@ const Cart = () => {
   const shippingFee = subtotal > 1 ? Math.max(subtotal * 0.1, 200) : 0;
   const total = subtotal + shippingFee;
 
-  console.log(products);
+  // console.log(products);
   const handleDelete = (productId) => {
     dispatch(removeProduct(productId));
   };
@@ -42,7 +42,7 @@ const Cart = () => {
       toast.error("You cannot buy Without Login");
       navigate("/login");
     }
-    dispatch(ProccedToBuy(user.id, products, total));
+    dispatch(ProccedToBuy(user.id, products, total,user));
   };
 
   return (

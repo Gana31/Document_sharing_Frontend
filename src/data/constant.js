@@ -13,7 +13,8 @@ export const ADDPRODUCT= "/createproduct"
 
 export const GET_PRODUCT_BY_NAME = BASE_URL + "/getproductbyname"
 
-
+export const VERIFY_PAYMENT = "/verifyPayment"
+ 
 export const GET_CATEGORIES= BASE_URL + "/getAllCategories"
 
 export const GET_USER_PRODUCT="/getallproductByUserId"
@@ -40,3 +41,5 @@ export const GET_USER_PROFILE="/userDetails"
 export const UPDATE_USER_PROFILE="/userupdate"
 
 export const CONTACT_US="/createContactus"
+
+export const RAZORPAY_KEY = "rzp_test_3uOuWNiHlg06wE"
