@@ -9,7 +9,10 @@ export const LOGIN_API= BASE_URL + "/userlogin"
 export const LOGOUT= BASE_URL + "/userLogout"
 export const PRODUCTLIST= BASE_URL + "/getallproduct"
 export const PRODUCTBYID= BASE_URL + "/getproductbyid"
-export const ADDPRODUCT= BASE_URL + "/createproduct"
+export const ADDPRODUCT= "/createproduct"
+
+export const GET_PRODUCT_BY_NAME = BASE_URL + "/getproductbyname"
+
 
 export const GET_CATEGORIES= BASE_URL + "/getAllCategories"
 

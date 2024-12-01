@@ -12,10 +12,10 @@ import About from './Pages/About/About';
 import AddProduct from './Pages/Product Operation/AddProduct';
 import Layout from './Pages/Product Operation/Layout';
 import ListProduct from './Pages/Product Operation/ListProduct';
-import UserOrders from './Pages/Orders/UserOrders';
 import ManageCategories from './Pages/Categories/ManageCategories';
 import Profile from './Pages/Auth/Profile';
 import ProtectedRoute from './Component/Common/ProtectedRoute';
+import { OrderHistory } from './Pages/Orders/OrderHistory';
 
 
 function App() {
@@ -43,7 +43,7 @@ function App() {
         {/* Protected Routes */}
         <Route 
           path="/userorders" 
-          element={<ProtectedRoute element={<UserOrders />} />} 
+          element={<ProtectedRoute element={<OrderHistory />} />} 
         />
         <Route 
           path="/add-product"  

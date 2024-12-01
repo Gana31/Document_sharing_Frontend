@@ -10,6 +10,9 @@ export function addToCart(product, quantity) {
       dispatch(setLoading(true))
       try {
         // console.log("Dispatching addOrUpdateProduct with", { product, quantity });
+        if(product.access_mode == "online"){
+          dispatch(addOrUpdateProduct({ product, quantity:0 }));
+        }
         dispatch(addOrUpdateProduct({ product, quantity }));
       toast.success("Product added to cart!");
       } catch (error) {

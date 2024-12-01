@@ -4,7 +4,8 @@ const initialState = {
     product: [],
     singleProduct :[],
     userProducts : [],
-    categories : []
+    categories : [],
+    searchResults: null, 
 };
 
 const productslice = createSlice({
@@ -27,9 +28,12 @@ const productslice = createSlice({
             const products = action.payload;
             state.userProducts = products;
         },
+        updateSearchResults: (state, action) => {
+            state.searchResults = action.payload;
+          },
     },
 });
 
-export const { setProduct,setSingleProduct,setUserProducts,setCategories} = productslice.actions;
+export const { setProduct,setSingleProduct,setUserProducts,setCategories,updateSearchResults} = productslice.actions;
 
 export default productslice.reducer;

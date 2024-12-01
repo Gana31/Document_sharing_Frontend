@@ -7,7 +7,7 @@ import LoadingSpinner from '../../Component/Common/LoadingSpinner';
 import { setLoading } from '../../slices/authslice';
 
 const ProductList = () => {
-  const { product, categories } = useSelector((state) => state.product); 
+  const { product, categories,searchResults } = useSelector((state) => state.product); 
   const {loading } = useSelector((state) => state.auth); 
   const [showModal, setShowModal] = useState(null); 
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -16,18 +16,20 @@ const ProductList = () => {
 
 
   useEffect(() => {
-    dispatch(GetALLProduct());
-  }, [dispatch]);
+    if (!searchResults) {
+      dispatch(GetALLProduct()); // Fetch all products if no search results
+    }
+  }, [dispatch,searchResults]);
 
   const filteredProducts = useMemo(() => {
     setLoading(true)
-    let filtered = [...product];
+    let filtered =searchResults || [...product];
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((item) =>
         item.categories.some((cat) => selectedCategories.includes(cat.name))
       );
     }
-
+    
 
     if (sortType === 'low-high') {
       filtered.sort((a, b) => a.price - b.price);
@@ -36,7 +38,9 @@ const ProductList = () => {
     }
     setLoading(false)
     return filtered;
-  }, [product, selectedCategories, sortType]);
+  }, [product, selectedCategories, sortType,searchResults]);
+
+
 
   const toggleCategory = (e) => {
     setLoading(true)

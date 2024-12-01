@@ -23,6 +23,7 @@ const Cart = () => {
   const shippingFee = subtotal > 1 ? Math.max(subtotal * 0.1, 200) : 0;
   const total = subtotal + shippingFee;
 
+  console.log(products);
   const handleDelete = (productId) => {
     dispatch(removeProduct(productId));
   };
@@ -83,30 +84,36 @@ const Cart = () => {
                 <div className="w-4/5 flex flex-col lg:flex-row justify-between lg:justify-evenly lg:items-center">
                   <div className="lg:w-[40%]">
                     <p className="text-sm sm:text-lg font-medium">{product.title}</p>
+                    {product.access_mode == "online" && 
+                    <p className="text-sm mt-4 text-gray-600">
+                     TYPE : <strong>PDF/ WORD</strong> </p>}
                   </div>
                   <div>
                     <p className="text-black font-bold lg:text-3xl sm:text-sm mt-1">
                       {currency}
                       {product.price}
                     </p>
+                  
                   </div>
 
                   {/* Quantity Controls */}
-                  <div className="flex items-center gap-4 mt-2">
-                    <button
-                      onClick={() => handleDecrease(product.id)}
-                      className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
-                    >
-                      -
-                    </button>
-                    <span className="text-sm sm:text-lg">{product.quantity}</span>
-                    <button
-                      onClick={() => handleIncrease(product.id)}
-                      className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
-                    >
-                      +
-                    </button>
-                  </div>
+                 {product.access_mode == "offline" && 
+                   <div className="flex items-center gap-4 mt-2">
+                   <button
+                     onClick={() => handleDecrease(product.id)}
+                     className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                   >
+                     -
+                   </button>
+                   <span className="text-sm sm:text-lg">{product.quantity}</span>
+                   <button
+                     onClick={() => handleIncrease(product.id)}
+                     className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                   >
+                     +
+                   </button>
+                 </div>
+                 }
 
                   {/* Delete Button */}
                   <div>

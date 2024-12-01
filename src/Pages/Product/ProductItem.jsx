@@ -23,10 +23,10 @@ const ProductItem = ({ id, image, name, price,location }) => {
 
         {/* Product details */}
         <div className="flex flex-col items-center p-3">
-          <p className="text-sm font-medium text-center truncate w-full">
+          <p className="text-sm font-medium px-1 text-center break-words w-full">
             {trimmedName}
           </p>
-          <p className="text-sm font-semibold">
+          <p className="text-md font-bold">
             {currency}{price}
           </p>
         </div>

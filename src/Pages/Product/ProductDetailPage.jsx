@@ -33,8 +33,8 @@ function ProductDetailPage() {
   };
 
   const handleOrderNow = () => {
-    if (singleProduct && quantity > 0) {
-      if (quantity <= singleProduct.stock) {
+    if (singleProduct && quantity > 0 || singleProduct.access_mode == 'online') {
+      if (quantity <= singleProduct.stock || singleProduct.access_mode == 'online') {
         dispatch(addToCart(singleProduct, quantity)); // Dispatch action to add product to cart
       } else {
         toast.error(`Cannot add more than ${singleProduct.stock} copies.`);
@@ -87,16 +87,23 @@ function ProductDetailPage() {
               <span className="text-lg text-gray-500 line-through">₹{singleProduct.originalPrice}</span>
             )}
           </div>
+          {singleProduct.access_mode == "online" ? <div className="mt-4">
+            <p className="text-sm text-gray-600">
+              TYPE : <strong>PDF/ WORD</strong> 
+            </p>
+          
+          </div>
+            : ''}
 
-          <div className="mt-4">
+          {singleProduct.access_mode == "offline" ? <div className="mt-4">
             <p className="text-sm text-gray-600">
               <strong>{singleProduct.stock}</strong> copies available.
             </p>
             <p className="text-sm text-gray-600 mt-2">Tax included</p>
           </div>
-
+            : ''}
           {/* Quantity Selector */}
-          <div className="sm:w-full mt-4 sm:items-center sm:text-center lg:text-start">
+          {singleProduct.access_mode == "offline" ?  <div className="sm:w-full mt-4 sm:items-center sm:text-center lg:text-start">
             <label htmlFor="quantity" className="text-xl font-semibold text-gray-800 mr-2">
               Quantity
             </label>
@@ -110,7 +117,7 @@ function ProductDetailPage() {
               onChange={(e) => setQuantity(e.target.value)}
             />
           </div>
-
+            : ""}
           {/* Buttons */}
           <div className="sm:w-full flex flex-col lg:flex-row gap-4 lg:mt-8 mt-4 text-center items-center justify-center lg:justify-normal">
             <button
